@@ -18,6 +18,8 @@ trait SaveLog
         while (!$count) {
             $grib2 = \iAmirNet\Grib2PHP\Parser::convert(...array_merge($parser, [$level]));
             $content = json_decode(file_get_contents($grib2->out), true);
+            if (!$content)
+                break;
             $count = count($content);
             if (!$count){
                 $index++;
