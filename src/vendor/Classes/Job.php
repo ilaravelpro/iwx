@@ -67,20 +67,21 @@ class Job
         $hour = $rohour ? \Carbon\Carbon::parse($datetime)->roundHour()->hour : \Carbon\Carbon::parse($datetime)->subHours(5)->roundHour()->hour;
         $r_hour = floor($hour / 6);
         $c_hour = $r_hour * 6;
-        $hour = str_slice('00', strlen($c_hour)).$c_hour;
+        $hour = str_slice($c_hour, '00', strlen($c_hour));
         $base_folder = "gfs.".\Carbon\Carbon::parse($datetime)->setHour($c_hour)->format('Ymd/H');
         $files_folder = $this->model_job::getByDataFolderDegree($base_folder, $degree);
+        $last_file = null;
         if ($files_folder->count()){
-            $last_file = $files_folder->last();
+            $last_file = $files_folder->sortBy('hour')->last();
             if ($last_file->hour > 31)
                 return false;
-            $aft_hour = $last_file->hour + 1;
+            $aft_hour = file_exists($last_file->storage) ? $last_file->hour + 1 : $last_file->hour;
         }else{
             $aft_hour = (str_replace('-', '', $c_hour -  \Carbon\Carbon::parse($datetime)->addHour()->format('H')) + $rohour);
         }
         if (in_array($degree, ['1.00', 1.00]))
             $aft_hour = ceil($aft_hour / 3) * 3;
-        $file_name = "gfs.t{$hour}z.pgrb2.".str_replace('.', 'p', $degree).".f".str_slice('000', strlen($aft_hour)).$aft_hour;
+        $file_name = "gfs.t{$hour}z.pgrb2.".str_replace('.', 'p', $degree).".f".str_slice($aft_hour,'000', strlen($aft_hour));
         $base_name = $base_folder."/atmos/". $file_name;
         $file_hour = $this->getPath(join(DIRECTORY_SEPARATOR, ['dl', $base_name]));
         $dates = [
@@ -90,42 +91,36 @@ class Job
             'degree' => $degree
         ];
         $url = $this->server . '/data/nccf/com/gfs/prod/' . $base_name;
-        $downloaded = false;
         if (file_exists($file_hour)){
             $dl_db = $this->model_dl::create(array_merge([
                 'url' => $url,
                 'storage' => $file_hour,
             ], $dates));
-            $downloaded = true;
         }else {
+            $job_db = $last_file && !file_exists($last_file->storage) ? $last_file : $this->model_job::create([
+                'storage' => $file_hour,
+                'date_folder' => $base_folder,
+                'file_name' => $file_name,
+                'hour' => $aft_hour,
+                'degree' => $degree
+            ]);
             if (!file_exists($this->getPath(join(DIRECTORY_SEPARATOR, ['dl', $base_folder."/atmos"]))))
                 mkdir($this->getPath(join(DIRECTORY_SEPARATOR,  ['dl', $base_folder."/atmos"])), 0775, true);
             $dl_db = null;
             if ($dl_db = $this->model_dl::findByUrl($url)) {
                 $file_hour = $dl_db->storage;
-                $downloaded = true;
             } else
                 if (HttpRequest::download($url, $file_hour)){
                     $dl_db = $this->model_dl::create(array_merge([
                         'url' => $url,
                         'storage' => $file_hour,
                     ], $dates));
-                    $downloaded = true;
                 }else{
                     $file = $this->_run(\Carbon\Carbon::parse($datetime)->roundHour()->subHours(6), $aft_hour + 6, $dl_db, $job_db, $degree);
                     $file_hour = $file['file'];
                     $dl_db = $file['dl_db'];
                     $job_db = $file['job_db'];
                 }
-        }
-        if ($downloaded) {
-            $job_db = $this->model_job::create([
-                'storage' => $dl_db->storage,
-                'date_folder' => $base_folder,
-                'file_name' => $file_name,
-                'hour' => $aft_hour,
-                'degree' => $degree
-            ]);
         }
         return ['file' => $file_hour, 'dl_db' => $dl_db, 'job_db' => $job_db];
     }
