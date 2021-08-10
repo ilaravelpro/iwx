@@ -36,6 +36,25 @@ class GFS
 
     public function _single($longitude, $latitude, &$level = 0, $datetime = null, $parsers = [])
     {
+        $file = $this->getNowFile($datetime, 0.25);
+        dd(\iAmirNet\Grib2PHP\Command::run($file->storage, [[$longitude, $latitude], [$longitude + 3, $latitude - 2], [$longitude - 3, $latitude + 2]], [
+            'surface',
+            'planetary boundary layer',
+            [
+                'unit' => 'mb',
+                'items' => [
+                    '200', '300'
+                ]
+            ]
+        ], ['UGRD', 'VGRD', 'TMP']));
+        /*$start = round(microtime(true), 2);
+        $memory = memory_get_usage();
+        dd("wgrib2 $file->storage -lon 22 56 -lon 22 58 -lon 23 33 -lon 24 35 -lon 25 34 -lon 27 35 -lon 24 33 -lon 28 39 -lon 28 34 -lon 20 33 ". '-match ":(UGRD|VGRD|TMP):(200) mb:"');
+        return [
+            'text' => shell_exec("D:\Libraries\Desktop\grib\wgrib2.exe D:\projects\laravel\5.8\avita\sand-box\storage\app/public\wx\gfs\dl\gfs.20210208/12/gfs.t12z.pgrb2.0p25.f005 -lon 22 56  -match ":(UGRD|VGRD|TMP):(surface|planetary boundary layer|(200|300) mb):"  -lev -var"'),
+            'memory' => (memory_get_usage() - $memory),
+            'time' => (round(microtime(true), 2) - $start),
+        ];*/
         list($file, $converts) = $this->load($datetime, $level);
         return [
             'fl' => $level ? (int)(round(_pa_to_alt($level) / 1000) * 10) : "Surface",
@@ -45,6 +64,8 @@ class GFS
             'ref_at' => $file->ref_at,
             'valid_at' => $file->valid_at,
             'wx' => $this->getWX($converts, grib2_find_index($longitude, $latitude)),
+            /*'memory' => (memory_get_usage() - $memory) / 1024 / 1024,
+            'time' => (round(microtime(true), 2) - $start),*/
             'longitude' => $longitude,
             'latitude' => $latitude,
         ];
