@@ -11,12 +11,12 @@ trait SaveLog
 {
     public function saveLog($dl_db, array $parser, &$level, $degree = 0.25) {
         $levels = iwx('values.level.pascals');
-        $index = getClosestKey($level, iwx('values.level.pascals'));
+        $index = getClosestKey($level, $levels);
         $level = $levels[$index];
         $count = false;
         $content = null;
         while (!$count) {
-            $grib2 = \iAmirNet\Grib2PHP\Parser::convert(...array_merge($parser, [$level]));
+            $grib2 = \iAmirNet\Grib2PHP\JsonParser::convert(...array_merge($parser, [$level]));
             $content = json_decode(file_get_contents($grib2->out), true);
             if (!$content)
                 break;

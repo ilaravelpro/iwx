@@ -10,20 +10,13 @@ namespace iLaravel\iWX\Vendor\Methods;
 
 trait GetLinks
 {
-    public function getLinks($route, $params = []) {
-/*        dd(json_encode(array_map(function ($pa) use($route, $params){
-            $text = $pa ? ($pa ? (int) (round(_pa_to_alt($pa) / 1000) * 10) : $pa) . "FL" : "Surface";
-            return [
-                'text' => $text,
-                'value' => $pa
-            ];
-        }, iwx('values.level.pascals'))));*/
-        return array_map(function ($pa) use($route, $params){
-            $text = $pa ? ($pa ? $pa / 100 : $pa)."hPa OR ". ($pa ? (int) (round(_pa_to_alt($pa) / 1000) * 10) : $pa) . "FL" : "Surface";
+    public function getLinks($route, $params = [], $h = false) {
+        return array_map(function ($pa) use($route, $params, $h){
+            $text = $pa ? ($pa && !$h ? $pa / 100 : $pa)."hPa OR ". ($pa ? (int) (round(_pa_to_alt($pa, $h) / 1000) * 10) : $pa) . "FL" : "Surface";
             return [
                 'text' => $text,
                 'value' => route($route, array_merge($params, ['level' => $pa]))
             ];
-        }, iwx('values.level.pascals'));
+        }, iwx('values.level.' . ($h ? 'hecto_pascals' : 'pascals')));
     }
 }

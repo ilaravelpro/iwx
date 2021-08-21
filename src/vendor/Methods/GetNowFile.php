@@ -13,7 +13,7 @@ use Carbon\Carbon;
 trait GetNowFile
 {
     public function getNowFile($datetime = null, $degree = 0.25) {
-        return $this->model_dl::all()->where('degree', $degree)->first();
+        if (env('WX_GFS_LOCAL')) return $this->model_dl::all()->where('degree', $degree)->first();
         $datetime = $datetime ? Carbon::parse($datetime) : Carbon::now();
         $date_time = $datetime->addHour()->roundHour();
         if (in_array($degree, ['1.00', 1.00]))
