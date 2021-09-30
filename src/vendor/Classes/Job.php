@@ -73,7 +73,7 @@ class Job
         $last_file = null;
         if ($files_folder->count()){
             $last_file = $files_folder->sortBy('hour')->last();
-            if ($last_file->hour > 31)
+            if ($last_file->hour > 36)
                 return false;
             $aft_hour = file_exists($last_file->storage) ? $last_file->hour + 1 : $last_file->hour;
         }else{
