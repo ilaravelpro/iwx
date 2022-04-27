@@ -16,6 +16,9 @@ return [
             'include' => true
         ],
     ],
+    'server' => [
+        "url" => 'https://ftpprd.ncep.noaa.gov', // or https://nomads.ncep.noaa.gov/pub
+    ],
     'units' => [
         'level' => 'p',
         'tmp' => 'k',

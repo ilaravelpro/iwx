@@ -27,10 +27,10 @@ class Job
         $disk = isset($options['disk']) ? $options['disk'] : 'wx.gfs';
         $this->disk = config('filesystems.disks.' . $disk, config('filesystems.disks.public'));
         $this->model_dl = imodal('WXGFSDl');
-        $this->model_job = imodal('WXGFSJob');
-        $this->server = 'https://nomads.ncep.noaa.gov/pub';
-        //$this->server = 'https://ftpprd.ncep.noaa.gov';
+        $this->model_job = imodal('WXGFSJob');;
+        $this->server = iwx("server.url", 'https://ftpprd.ncep.noaa.gov');
     }
+
     public static function delete() {
         return (new self())->_delete();
     }
