@@ -26,7 +26,7 @@ class JobGFS extends JobParent
         $hour = str_slice($c_hour, '00', strlen($c_hour));
         $base_folder = "gfs.".\Carbon\Carbon::parse($datetime)->setHour($c_hour)->format('Ymd/H');
         $storage_folder = $base_folder."/atmos";
-        $files_folder = $this->model_job::getByDataFolderDegree($base_folder, $degree)->where('src', $this->src);
+        $files_folder = $this->model_job::getByDataFolderDegree($storage_folder, $degree)->where('src', $this->src);
         $last_file = null;
         if ($files_folder->count()){
             $last_file = $files_folder->sortBy('hour')->last();

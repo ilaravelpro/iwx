@@ -28,7 +28,7 @@ class JobECMWF extends JobParent
         $base_folder = \Carbon\Carbon::parse($datetime)->setHour($c_hour)->format('Ymd/H'). 'z';
         $base_file_name = \Carbon\Carbon::parse($datetime)->setHour($c_hour)->format('YmdH0000');
         $storage_folder = "$base_folder/0p4-beta/$type";
-        $files_folder = $this->model_job::getByDataFolderDegree($base_folder, $degree)->where('src', $this->src);
+        $files_folder = $this->model_job::getByDataFolderDegree($storage_folder, $degree)->where('src', $this->src);
         $last_file = null;
         if ($files_folder->count()){
             $last_file = $files_folder->sortBy('hour')->last();
