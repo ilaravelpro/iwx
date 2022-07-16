@@ -18,7 +18,7 @@ trait SaveLog
         $content = null;
         while (!$count) {
             $grib2 = \iAmirNet\Grib2PHP\JsonParser::convert(...array_merge($parser, [$level]));
-            if ($grib2->out) {
+            if (file_exists($grib2->out)) {
                 $content = json_decode(file_get_contents($grib2->out), true);
                 if (!$content)
                     break;
