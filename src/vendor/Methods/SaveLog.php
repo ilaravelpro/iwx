@@ -21,8 +21,8 @@ trait SaveLog
             if (file_exists($grib2->out)) {
                 $content = json_decode(file_get_contents($grib2->out), true);
                 if (!$content)
-                    break;
-                $count = count($content);
+                    unlink($grib2->out);
+                $count = !$content ? 0: count($content);
             }else{
                 $count = 0;
             }

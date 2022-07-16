@@ -42,7 +42,7 @@ class Weather
         }, array_unique(is_array($level) ? $level : [$level]));
         if (($s = array_search(0, $levels)) !== false) {
             unset($levels[$s]);
-            $levels = array_merge([
+            $levels = array_merge($this->src == 'ecmwf'? ['2 m above ground'] :[
                 'surface',
                 'planetary boundary layer',
             ], $levels);
