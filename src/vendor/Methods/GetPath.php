@@ -12,7 +12,7 @@ trait GetPath
         $paths = [$this->disk['root']];
         if ($this->disk['driver'] == 'local'){
             $paths[] = 'wx';
-            $paths[] = 'gfs';
+            $paths[] = $this->src;
         }
         if ($path) $paths[] = $path;
         return join(DIRECTORY_SEPARATOR, $paths);

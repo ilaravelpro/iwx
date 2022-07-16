@@ -5,7 +5,7 @@
  * Copyright (c) 2021. Powered by iamir.net
  */
 
-namespace iLaravel\iWX\iApp\Http\Controllers\API\v1\WXGFS;
+namespace iLaravel\iWX\iApp\Http\Controllers\API\v1\WX;
 
 use iLaravel\Core\iApp\Http\Requests\iLaravel as Request;
 

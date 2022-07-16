@@ -9,7 +9,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWxGfsDlsTable extends Migration
+class CreateWxLogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,10 +18,11 @@ class CreateWxGfsDlsTable extends Migration
      */
     public function up()
     {
-        Schema::create('wx_gfs_dls', function (Blueprint $table) {
+        Schema::create('wx_logs', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('url');
-            $table->text('storage');
+            $table->string('src')->nullable('gfs');
+            $table->text('storage_in');
+            $table->text('storage_out');
             $table->string('degree')->nullable('0.25');
             $table->timestamp('dl_at')->nullable();
             $table->timestamp('ref_at')->nullable();
@@ -37,6 +38,6 @@ class CreateWxGfsDlsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wx_gfs_dls');
+        Schema::dropIfExists('wx_logs');
     }
 }

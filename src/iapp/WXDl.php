@@ -7,15 +7,13 @@
 
 namespace iLaravel\iWX\iApp;
 
-use iLaravel\Core\iApp\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Database\Eloquent\Model;
 
-class WXGFSLog extends Model
+class WXDl extends Model
 {
     use \iLaravel\Core\iApp\Modals\Modal;
 
-    protected $table = 'wx_gfs_logs';
+    protected $table = 'wx_dls';
 
     protected $guarded = [];
 
@@ -27,18 +25,13 @@ class WXGFSLog extends Model
 
     protected static function boot()
     {
-        self::deleted(function (self $event) {
-            if (file_exists($event->storage_out)) {
-                @unlink($event->getAttribute('storage_out'));
-            }
-            self::resetRecordsId();
-        });
         parent::boot();
-    }
-
-    public function onDelete()
-    {
-        dd($this);
+        parent::deleted(function (self $event) {
+            self::resetRecordsId();
+            if (file_exists($event->storage)) {
+                unlink($event->storage);
+            }
+        });
     }
 
     public function getDlAtAttribute($value)
@@ -56,13 +49,13 @@ class WXGFSLog extends Model
         return format_datetime($value, $this->datetime, 'time');
     }
 
-    public static function findByIn($in)
+    public static function findByUrl($url)
     {
-        return static::where('storage_in', $in)->first();
+        return static::where('url', $url)->first();
     }
 
-    public static function findByOut($out)
+    public static function findByStorage($url)
     {
-        return static::where('storage_out', $out)->first();
+        return static::where('storage', $url)->first();
     }
 }

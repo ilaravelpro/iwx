@@ -7,7 +7,7 @@
 
 namespace iLaravel\iWX\Vendor;
 
-class GFS
+class Weather
 {
     use Methods\Construct,
         Methods\SaveLog,
@@ -31,7 +31,7 @@ class GFS
     public function single($longitude, $latitude, $level = 0, $datetime = null, $parsers = [])
     {
         return ['data' => array_merge($this->_single($longitude, $latitude, $level, $datetime, $parsers), [
-            'links' => $this->getLinks('api.iwx.gfs.single', ["longitude" => $longitude, "latitude" => $latitude], !request('g2j'))
+            'links' => $this->getLinks('api.iwx.single', ['src' => $this->src, "longitude" => $longitude, "latitude" => $latitude], !request('g2j'))
         ])];
     }
 
@@ -82,7 +82,7 @@ class GFS
     public function multi(array $coordinates, $level = 0, $datetime = null, $parsers = [])
     {
         return ['data' => array_merge($this->_multi($coordinates, $level, $datetime, $parsers), [
-            'links' => $this->getLinks('api.iwx.gfs.multi', ["coordinates" => $coordinates])
+            'links' => $this->getLinks('api.iwx.multi', ['src' => $this->src, "coordinates" => $coordinates])
         ])];
     }
 
@@ -110,7 +110,7 @@ class GFS
     {
         unset($data['level']);
         return ['data' => array_merge($this->_range($data, $level, $datetime, $parsers), [
-            'links' => $this->getLinks('api.iwx.gfs.range', ["coordinates" => $data])
+            'links' => $this->getLinks('api.iwx.range', ['src' => $this->src, "coordinates" => $data])
         ])];
     }
 
@@ -163,7 +163,7 @@ class GFS
     {
         unset($data['level']);
         return ['data' => array_merge($this->_section($section, $data, $level, $datetime, $parsers), [
-            'links' => $this->getLinks('api.iwx.gfs.section', ['section' => $section])
+            'links' => $this->getLinks("api.iwx.section", ['src' => $this->src, 'section' => $section])
         ])];
     }
 

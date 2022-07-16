@@ -8,9 +8,9 @@
 namespace iLaravel\iWX\iApp;
 
 
-class WXGFSJob extends \iLaravel\Core\iApp\Model
+class WXJob extends \iLaravel\Core\iApp\Model
 {
-    protected $table = 'wx_gfs_jobs';
+    protected $table = 'wx_jobs';
 
     protected static function boot()
     {
@@ -21,7 +21,7 @@ class WXGFSJob extends \iLaravel\Core\iApp\Model
     }
 
     public function dl() {
-        return $this->belongsTo(imodal('WXGFSDl'), 'storage');
+        return $this->belongsTo(imodal('WXDl'), 'storage');
     }
 
     public static function getByDataFolderDegree($date_folder, $degree = '0.25')

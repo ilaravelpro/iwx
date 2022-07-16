@@ -17,12 +17,20 @@ trait SaveLog
         $content = null;
         while (!$count) {
             $grib2 = \iAmirNet\Grib2PHP\JsonParser::convert(...array_merge($parser, [$level]));
-            $content = json_decode(file_get_contents($grib2->out), true);
-            if (!$content)
-                break;
-            $count = count($content);
+            /*if ($level == 20000)
+                dd($grib2);*/
+            try {
+                $content = json_decode(file_get_contents($grib2->out), true);
+                if (!$content)
+                    break;
+                $count = count($content);
+            }catch (\Exception $exception){
+                $count = 0;
+            }
             if (!$count){
                 $index++;
+                if ($index == count($levels))
+                    break;
                 $level = $levels[$index];
             }
         }
@@ -33,6 +41,7 @@ trait SaveLog
             'dl_at' => $dl_db->dl_at,
             'ref_at' => $dl_db->ref_at,
             'valid_at' => $dl_db->valid_at,
+            'src' => $dl_db->src,
         ];
         if ($log = $this->model_log::findByOut($grib2->out))
             $log->update($data);

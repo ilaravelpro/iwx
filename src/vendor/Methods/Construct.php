@@ -11,13 +11,15 @@ namespace iLaravel\iWX\Vendor\Methods;
 trait Construct
 {
     public $disk;
-    public function __construct($options = [])
+    public $src;
+    public function __construct($src = 'gfs', $options = [])
     {
         ini_set('memory_limit', '-1');
         set_time_limit(60000);
         $disk = isset($options['disk']) ? $options['disk'] : 'wx.gfs';
         $this->disk = env('WX_GFS_LOCAL') ? config('filesystems.disks.public') : config('filesystems.disks.' . $disk, config('filesystems.disks.public'));
-        $this->model_dl = imodal('WXGFSDl');
-        $this->model_log = imodal('WXGFSLog');
+        $this->model_dl = imodal('WXDl');
+        $this->model_log = imodal('WXLog');
+        $this->src = $src ? : 'gfs';
     }
 }

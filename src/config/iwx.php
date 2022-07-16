@@ -16,8 +16,23 @@ return [
             'include' => true
         ],
     ],
-    'server' => [
-        "url" => 'https://ftpprd.ncep.noaa.gov', // or https://nomads.ncep.noaa.gov/pub
+    'sources' => [
+        'gfs' => [
+            'title' => 'American',
+            'name' => 'gfs',
+            'server' => 'https://ftpprd.ncep.noaa.gov',
+            'models' => [
+                'job' => \iLaravel\iWX\Vendor\Classes\JobGFS::class
+            ]
+        ],
+        'ecmwf' => [
+            'title' => 'European',
+            'name' => 'ecmwf',
+            'server' => 'https://data.ecmwf.int/forecasts',
+            'models' => [
+                'job' => \iLaravel\iWX\Vendor\Classes\JobECMWF::class
+            ]
+        ],
     ],
     'units' => [
         'level' => 'p',
