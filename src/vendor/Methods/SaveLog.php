@@ -9,7 +9,8 @@ namespace iLaravel\iWX\Vendor\Methods;
 
 trait SaveLog
 {
-    public function saveLog($dl_db, array $parser, &$level, $degree = 0.25) {
+    public function saveLog($dl_db, array $parser, &$level, $degree = 0.25)
+    {
         $levels = iwx('values.level.pascals');
         $index = getClosestKey($level, $levels);
         $level = $levels[$index];
@@ -17,17 +18,15 @@ trait SaveLog
         $content = null;
         while (!$count) {
             $grib2 = \iAmirNet\Grib2PHP\JsonParser::convert(...array_merge($parser, [$level]));
-            /*if ($level == 20000)
-                dd($grib2);*/
-            try {
+            if ($grib2->out) {
                 $content = json_decode(file_get_contents($grib2->out), true);
                 if (!$content)
                     break;
                 $count = count($content);
-            }catch (\Exception $exception){
+            }else{
                 $count = 0;
             }
-            if (!$count){
+            if (!$count) {
                 $index++;
                 if ($index == count($levels))
                     break;
