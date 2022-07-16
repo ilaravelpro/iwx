@@ -65,12 +65,14 @@ class JobParent
             'dl_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s'),
             'ref_at' => \Carbon\Carbon::parse($datetime)->setHour($c_hour)->setMinute(0)->setSecond(0)->format('Y-m-d H:i:s'),
             'valid_at' => \Carbon\Carbon::parse($datetime)->setHour($c_hour)->addHours($aft_hour)->setMinute(0)->setSecond(0)->format('Y-m-d H:i:s'),
-            'degree' => $degree
+            'degree' => $degree,
+            'src' => $this->src
         ];
         if (file_exists($file_hour)){
             $dl_db = $this->model_dl::create(array_merge([
                 'url' => $url,
                 'storage' => $file_hour,
+                'src' => $this->src
             ], $dates));
         }else {
             $job_db = $last_file && !file_exists($last_file->storage) ? $last_file : $this->model_job::create([
