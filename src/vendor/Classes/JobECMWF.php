@@ -19,8 +19,8 @@ class JobECMWF extends JobParent
 
     public function _run($datetime = null, $rohour = 0, $dl_db = null, $job_db = null, $degree = '0.4') {
         if (!$degree) $degree = '0.4';
-        $datetime = $datetime ? : \Carbon\Carbon::now();
-        $hour = $rohour ? \Carbon\Carbon::parse($datetime)->roundHour()->hour : \Carbon\Carbon::parse($datetime)->subHours(5)->roundHour()->hour;
+        $datetime = $datetime ? : ($rohour ? \Carbon\Carbon::now() : \Carbon\Carbon::now()->subHours(10));
+        $hour = \Carbon\Carbon::parse($datetime)->roundHour()->hour;
         $r_hour = floor($hour / 6);
         $c_hour = $r_hour * 6;
         $hour = str_slice($c_hour, '00', strlen($c_hour));

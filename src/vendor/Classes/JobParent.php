@@ -89,18 +89,31 @@ class JobParent
             if ($dl_db = $this->model_dl::findByUrl($url)) {
                 $file_hour = $dl_db->storage;
             } else
-                if (HttpRequest::download($url, $file_hour)){
-                    $dl_db = $this->model_dl::create(array_merge([
-                        'url' => $url,
-                        'storage' => $file_hour,
-                        'src' => $this->src
-                    ], $dates));
-                }else{
-                    $file = $this->_run(\Carbon\Carbon::parse($datetime)->roundHour()->subHours(6), $aft_hour + 6, $dl_db, $job_db, $degree);
-                    $file_hour = $file['file'];
-                    $dl_db = $file['dl_db'];
-                    $job_db = $file['job_db'];
-                }
+                $dl_db = $this->model_dl::create(array_merge([
+                    'url' => $url,
+                    'storage' => $file_hour,
+                    'src' => $this->src
+                ], $dates));
+            HttpRequest::download($url, $file_hour);
+//                if (HttpRequest::download($url, $file_hour)){
+//                    $dl_db = $this->model_dl::create(array_merge([
+//                        'url' => $url,
+//                        'storage' => $file_hour,
+//                        'src' => $this->src
+//                    ], $dates));
+//                }else{
+//                    /*$file = $this->_run(\Carbon\Carbon::parse($datetime)->roundHour()->subHours(6), $aft_hour + 6, $dl_db, $job_db, $degree);
+//                    if (!$file)
+//                    return $file;
+//                    $file_hour = $file['file'];
+//                    $dl_db = $file['dl_db'];
+//                    $job_db = $file['job_db'];*/
+//                    $dl_db = $this->model_dl::create(array_merge([
+//                        'url' => $url,
+//                        'storage' => $file_hour,
+//                        'src' => $this->src
+//                    ], $dates));
+//                }
         }
         return ['file' => $file_hour, 'dl_db' => $dl_db, 'job_db' => $job_db];
     }
