@@ -7,7 +7,6 @@
 
 namespace iLaravel\iWX\Vendor\Methods;
 
-
 use Carbon\Carbon;
 
 trait GetNowFile
@@ -20,8 +19,9 @@ trait GetNowFile
         if (in_array($degree, ['1.00', 1.00, '0.4', 0.4]))
             $date_time = $date_time->setHour(ceil($date_time->hour / 3) * 3);
         $items = $this->model_dl::where('src', $this->src)->where('valid_at',$date_time->format('Y-m-d H:i:s'))->where('degree', $degree)->get();
+        /*dd($items);
         if ($items->count() > 1)
-            return $items[$items->count() - 2];
+            return $items[$items->count() - 2];*/
         return $items->last();
     }
 }
