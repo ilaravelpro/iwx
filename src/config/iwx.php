@@ -21,6 +21,24 @@ return [
             'title' => 'American',
             'name' => 'gfs',
             'server' => 'https://ftpprd.ncep.noaa.gov',
+            'type' => 'filter',
+            'options' => [
+                "filter" => [
+                    "base_url" => "https://nomads.ncep.noaa.gov/cgi-bin",
+                    "degrees" => [
+                        "global" => [
+                            "vars" => ["all_lev", "var_GUST", "var_TMP", "var_UGRD", "var_VGRD"],
+                            "items" => ["leftlon" => 0, "rightlon" => 360, "toplat" => 90, "bottomlat" => -90],
+                        ],
+                        "0.25" => [
+                            "file" => "filter_gfs_0p25_1hr.pl"
+                        ],
+                        "1.00" => [
+                            "file" => "filter_gfs_1p00.pl"
+                        ],
+                    ]
+                ],
+            ],
             'models' => [
                 'job' => \iLaravel\iWX\Vendor\Classes\JobGFS::class
             ]

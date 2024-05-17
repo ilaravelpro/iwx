@@ -31,7 +31,7 @@ class JobParent
     }
 
     public static function delete() {
-        return (new self())->_delete();
+        return (new static())->_delete();
     }
 
     public function _delete() {
@@ -42,8 +42,7 @@ class JobParent
         foreach ($jobsd as $job) {
             foreach (['dl', 'json'] as $item) {
                 $job_dir = $this->getPath(join(DIRECTORY_SEPARATOR,  [$item, $job]));
-                if (is_dir($job_dir))
-                    $Filesystem->deleteDirectory($job_dir);
+                if (is_dir($job_dir)) $Filesystem->deleteDirectory($job_dir);
             }
         }
         $jobs->delete();
@@ -53,6 +52,18 @@ class JobParent
         $model_log = imodal('WXLog');
         $logs = $model_log::where('src', $this->src)->where('created_at', '<', Carbon::now()->subDays(3)->format('Y-m-d H:i:s'))->get();
         foreach ($logs as $log) $log->delete();
+        $dateDelete = Carbon::now()->subDays(4)->format('Ymd');
+        foreach (['dl', 'json'] as $item) {
+            if (is_dir($this->getPath($item)))
+                foreach (scandir($this->getPath($item)) as $dir_item) {
+                    if (!in_array($dir_item, ['.', '..']) && str_replace('gfs.', '', $dir_item) < $dateDelete) {
+                        try {
+                            $job_dir = $this->getPath(join(DIRECTORY_SEPARATOR,  [$item, $dir_item]));
+                            if (is_dir($job_dir)) $Filesystem->deleteDirectory($job_dir);
+                        }catch (\Throwable $exception) {}
+                    }
+                }
+        }
         return ['status' => true];
     }
 
@@ -84,7 +95,7 @@ class JobParent
                 'src' => $this->src
             ]);
             if (!file_exists($this->getPath(join(DIRECTORY_SEPARATOR, ['dl', $storage_folder]))))
-                mkdir($this->getPath(join(DIRECTORY_SEPARATOR,  ['dl', $storage_folder])), 0775, true);
+                mkdir($this->getPath(join(DIRECTORY_SEPARATOR,  ['dl', $storage_folder])), 0777, true);
             $dl_db = null;
             if ($dl_db = $this->model_dl::findByUrl($url)) {
                 $file_hour = $dl_db->storage;

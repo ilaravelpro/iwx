@@ -35,7 +35,7 @@ class WXLog extends Model
         });
         parent::boot();
     }
-    
+
     public function getDlAtAttribute($value)
     {
         return format_datetime($value, $this->datetime, 'time');

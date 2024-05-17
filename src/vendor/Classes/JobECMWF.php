@@ -14,7 +14,8 @@ use Illuminate\Filesystem\Filesystem;
 
 class JobECMWF extends JobParent
 {
-    public $server = 'https://data.ecmwf.int/forecasts';
+    public $server = 'https://data_ecmwf.iamir.net/forecasts';
+    //public $server = 'https://data.ecmwf.int/forecasts';
     public $src = 'ecmwf';
 
     public function _run($datetime = null, $rohour = 0, $dl_db = null, $job_db = null, $degree = '0.4') {
@@ -27,7 +28,7 @@ class JobECMWF extends JobParent
         $type = $c_hour == 6 || $c_hour == 18 ? 'scda' : 'oper';
         $base_folder = \Carbon\Carbon::parse($datetime)->setHour($c_hour)->format('Ymd/H'). 'z';
         $base_file_name = \Carbon\Carbon::parse($datetime)->setHour($c_hour)->format('YmdH0000');
-        $storage_folder = "$base_folder/0p4-beta/$type";
+        $storage_folder = "$base_folder/ifs/0p4-beta/$type";
         $files_folder = $this->model_job::getByDataFolderDegree($storage_folder, $degree)->where('src', $this->src);
         $last_file = null;
         if ($files_folder->count()){

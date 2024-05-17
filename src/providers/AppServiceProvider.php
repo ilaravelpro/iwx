@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->mergeConfigFrom(iwx_path('config/iwx.php'), 'ilaravel.wx');
+        $this->mergeConfigFrom(iwx_path('config/iwx.php'), 'ilaravel.main.wx');
 
         if($this->app->runningInConsole())
         {
